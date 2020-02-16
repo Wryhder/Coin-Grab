@@ -1,3 +1,5 @@
+import { coinCollection } from "./helpers.js"
+
 // Preload game assets
 function preload() {
   this.load.image('coin', '../assets/Coin.png');
@@ -9,6 +11,12 @@ function preload() {
 
 // Define game objects
 function create() {
+  // Initialize player score
+  var score = 0;
+
+  // Display player score on top-left corner of screen
+  var score_text = this.add.text(10, 10, score, null);
+
   var player = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'player');
   player.setScale(4);
   player.setOrigin(.5);
@@ -24,7 +32,7 @@ function create() {
   cursors = this.input.keyboard.createCursorKeys();
 
   var coins = new Array();
-  
+
   // Populate `coins` array with coin sprites randomly placed on screen
   var rand_x, rand_y;
   for (var i = 0; i < 10; i++) {
@@ -58,6 +66,8 @@ function update() {
   if (cursors.right.isDown) {
     player.x += 2;
   }
+
+  coinCollection();
 }
 
 var config = {
