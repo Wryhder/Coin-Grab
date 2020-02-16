@@ -12,6 +12,15 @@ function create() {
   var player = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'player');
   player.setScale(4);
   player.setOrigin(.5);
+  
+  this.anims.create({
+    key: 'player_anim',
+    frames: this.anims.generateFrameNumbers('player', { start: 0, end: 8 }),
+    repeat: -1
+  });
+
+  player.anims.play('player_anim');
+
 }
 
 // Engine loop
