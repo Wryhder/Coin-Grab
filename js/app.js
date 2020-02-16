@@ -22,6 +22,22 @@ function create() {
   player.anims.play('player_anim');
 
   cursors = this.input.keyboard.createCursorKeys();
+
+  var coins = new Array();
+  
+  // Populate `coins` array with coin sprites randomly placed on screen
+  var rand_x, rand_y;
+  for (var i = 0; i < 10; i++) {
+    rand_x = Math.floor(Math.random() * Math.floor(800));
+    rand_y = Math.floor(Math.random() * Math.floor(600));
+
+    var coin = this.add.sprite(rand_x, rand_y, 'coin');
+
+    // Set position of coin sprite at center of graphic
+    coin.setOrigin(.5);
+
+    coins.push(coin);
+  }
 }
 
 // Engine loop
