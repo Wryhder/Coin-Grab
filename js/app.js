@@ -8,7 +8,11 @@ function preload() {
 }
 
 // Define game objects
-function create() {}
+function create() {
+  var player = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'player');
+  player.setScale(4);
+  player.setOrigin(.5);
+}
 
 // Engine loop
 function update() {}
