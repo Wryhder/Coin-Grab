@@ -1,4 +1,10 @@
-import { coinCollection } from "./helpers.js"
+var player;
+var cursors;
+var coins = new Array();
+var score;
+var score_text;
+var rand_x, rand_y;
+
 
 // Preload game assets
 function preload() {
@@ -12,12 +18,12 @@ function preload() {
 // Define game objects
 function create() {
   // Initialize player score
-  var score = 0;
+  score = 0;
 
   // Display player score on top-left corner of screen
-  var score_text = this.add.text(10, 10, score, null);
+  score_text = this.add.text(10, 10, score, null);
 
-  var player = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'player');
+  player = this.add.sprite(this.cameras.main.width / 2, this.cameras.main.height / 2, 'player');
   player.setScale(4);
   player.setOrigin(.5);
 
@@ -31,10 +37,7 @@ function create() {
 
   cursors = this.input.keyboard.createCursorKeys();
 
-  var coins = new Array();
-
   // Populate `coins` array with coin sprites randomly placed on screen
-  var rand_x, rand_y;
   for (var i = 0; i < 10; i++) {
     rand_x = Math.floor(Math.random() * Math.floor(800));
     rand_y = Math.floor(Math.random() * Math.floor(600));
@@ -68,6 +71,28 @@ function update() {
   }
 
   coinCollection();
+}
+
+function coinCollection() {
+  for (var coin of coins) {
+    if (player.x > (coin.x - coin.width / 2)
+      && player.x < (coin.x + coin.width / 2)
+      && player.y > (coin.y - coin.height / 2)
+      && player.y < (coin.y + coin.height / 2)) {
+
+      // collision; move coin to some other random location
+      rand_x = Math.floor(Math.random() * Math.floor(800));
+      rand_y = Math.floor(Math.random() * Math.floor(600));
+      coin.x = rand_x;
+      coin.y = rand_y;
+
+      // Increase player score
+      score += 1;
+
+      // Update score display
+      score_text.setText(score);
+    }
+  }
 }
 
 var config = {
