@@ -3,8 +3,11 @@ var cursors;
 var coins = new Array();
 var score;
 var score_text;
+var frames;
+var frames_text;
+var timer;
+var timer_text;
 var rand_x, rand_y;
-
 
 // Preload game assets
 function preload() {
@@ -20,6 +23,15 @@ function create() {
   // Initialize player score
   score = 0;
 
+  // Counts the number of frames game has run
+  frames = 0;
+
+  // Initialize timer to 20 seconds
+  timer = 20;
+
+  // Place a text label to display timer at top-right corner of screen
+  timer_text = this.add.text(this.cameras.main.width - 25, 10, timer, null);
+  
   // Display player score on top-left corner of screen
   score_text = this.add.text(10, 10, score, null);
 
@@ -53,6 +65,22 @@ function create() {
 
 // Engine loop
 function update() {
+  // Increment frame counter after every update
+  frames++;
+
+  // Decrement timer every second (or 60 frames)
+  if (frames % 60 == 0) {
+    timer--;
+    timer_text.setText(timer);
+
+    // End game when timer reaches 0
+    if (timer == 0) {
+      window.alert("GAME OVER");
+
+      // TODO: Helper function for game-over logic
+    }
+  }
+
   // move the player up when up arrow key is pressed
   if (cursors.up.isDown) {
     player.y -= 2;
