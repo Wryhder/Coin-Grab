@@ -2,7 +2,7 @@
 
 A 2D arcade-style game which records player scores in a smart contract on the Ethereum blockchain. Player must collect as many coins as they can before the timer runs out.
 
-> Game is based on [this tutorial](https://ethereumdevelop.com/ethereum-game-programming/)
+> Game builds on [this tutorial](https://ethereumdevelop.com/ethereum-game-programming/)
 
 ### Technologies
 
