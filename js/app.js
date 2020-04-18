@@ -55,6 +55,82 @@ if (typeof web3 !== 'undefined') {
   // If the code goes here, this means the player doesn't have MetaMask installed
   console.log('No web3? You should consider trying MetaMask!');
 }
+
+var HighScoresContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "score",
+				"type": "uint256"
+			}
+		],
+		"name": "setHighScore",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "addresses",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "a",
+				"type": "address"
+			}
+		],
+		"name": "getHighScore",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "totalPlayers",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+
+var HighScores = HighScoresContract.at("0x9d0dE36bA661844292107a0065ACF0CB7dF55BCF");
  
 // Preload game assets
 function preload() {
@@ -110,6 +186,43 @@ function create() {
   }
 }
 
+function gameOver() {
+  // call to contract's getHighScore() function
+  HighScores.getHighScore(account, {from: account}, (error, result) => {
+    // initialize highscore
+    let highscore = 0;
+
+    if (!error) {
+      // The result of the contract call is stored in result.c[0]
+      // let's store that in our highscore variable
+      highscore = result.c[0];
+
+      // check if the player's current score beat the previous highscore recorded on the smart contract
+      if (score > highscore) {
+        // if yes, call the contract's setHighScore() function
+        HighScores.setHighScore(score, {from: account}, (error, result) => {
+          if (!error) {
+            // show a message announcing player's new highscore
+            window.alert("Congratulations! Your new highscore is " + score);
+
+            // after alert is closed, reload page for another play
+            location.reload();
+          } else {
+            // player likely rejected the transaction to setHighScore()
+            console.dir(error);
+          }
+        });
+      } else {
+        // score was not beat so show current highscore and reload page
+        window.alert("You did not beat your current highscore of " + highscore);
+        location.reload();
+      }
+    } else {
+      console.dir(error);
+    }
+  });
+}
+
 // Engine loop
 function update() {
   // Increment frame counter after every update
@@ -123,8 +236,7 @@ function update() {
     // End game when timer reaches 0
     if (timer == 0) {
       window.alert("GAME OVER");
-
-      // TODO: Helper function for game-over logic
+      gameOver();
     }
   }
 
