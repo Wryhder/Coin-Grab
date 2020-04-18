@@ -1,3 +1,6 @@
+// Store player's ethereum account as a global variable
+var account;
+
 var player;
 var cursors;
 var coins = new Array();
@@ -9,6 +12,50 @@ var timer;
 var timer_text;
 var rand_x, rand_y;
 
+// Check if web3 has been injected by the browser (MetaMask)
+if (typeof web3 !== 'undefined') {
+  // Use provider
+  var web3js = new Web3(web3.currentProvider);
+  console.log("web3 has been injected");
+
+  // Require player to first login to MetaMask
+  ethereum.enable()
+    .then(function (a) {
+      // ethereum.enable() returns a promise of an array of hex-prefixed ethereum address strings
+      // We can store the first entry into our global 'account' variable
+      account = a[0];
+
+      // The configuration and creation of our Phaser game is now here,
+      // the game won't start until the player logs in to MetaMask
+      var config = {
+        type: Phaser.WEBGL,
+        parent: 'ivan-game',
+        width: 800,
+        height: 600,
+        backgroundColor: 'black',
+        scene: {
+          preload: preload,
+          create: create,
+          update: update
+        },
+        pixelArt: true,
+        audio: {
+          disableWebAudio: true
+        }
+      }
+
+      var game = new Phaser.Game(config);
+
+    })
+    .catch(function (error) {
+      // Handle error. Likely the user rejected the login
+      console.error(error);
+    });
+} else {
+  // If the code goes here, this means the player doesn't have MetaMask installed
+  console.log('No web3? You should consider trying MetaMask!');
+}
+ 
 // Preload game assets
 function preload() {
   this.load.image('coin', '../assets/Coin.png');
@@ -122,22 +169,3 @@ function coinCollection() {
     }
   }
 }
-
-var config = {
-  type: Phaser.WEBGL,
-  parent: 'ivan-game',
-  width: 800,
-  height: 600,
-  backgroundColor: 'black',
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
-  },
-  pixelArt: true,
-  audio: {
-    disableWebAudio: true
-  }
-};
-
-var game = new Phaser.Game(config);
